@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/09 18:53:15 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/09 22:21:56 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ char	*p_read_whole_file(char *path)
 int main(int ac, char **av)
 {
 	char	*content;
+	char	**prog_args;
+	char	 *env_args[] = {"PATH=/bin", NULL};
+	char	*path;
 
 	ac--;
 	av++;
@@ -58,5 +61,20 @@ int main(int ac, char **av)
 	}
 	printf("args: %s\n", av[0]);
 	content = p_read_whole_file(av[0]);
+	prog_args = ft_split(av[1], ' ');
+	if (access(prog_args[0], F_OK) == 0)
+		execve(prog_args[0], &prog_args[1], env_args);
+	else
+	{
+		path = ft_strjoin("/usr/bin/", prog_args[0]);
+		execve(path, &prog_args[1], env_args);
+	}
+	// int i = 0;
+	// while (prog_args[i])
+	// {
+	// 	printf("split args: %s\n", prog_args[i]);
+	// 	i++;
+	// }
+	printf("split args: %s\n", prog_args[1]);
 	printf("\ntext:\n%s\n", content);
 }
