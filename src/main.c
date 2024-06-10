@@ -6,52 +6,52 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/09 22:30:25 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/10 14:55:03 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*p_read_whole_file(char *path)
+char	*p_handle_prog_name(char *arg, char **env)
 {
-	int		fd;
-	char	buf[1024];
-	char	*content;
-	int		bytes_read;
-	int		total_size_file;
+	char	*path;
+	int	i;
 
-	total_size_file = 0;
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		return (NULL);
-	bytes_read = 1;
-	while (bytes_read > 0)
+	i = 0;
+	while (env[i])
 	{
-		bytes_read = read(fd,  buf, 1024);
-		if (bytes_read < 0)
-			return (NULL);
-		total_size_file += bytes_read;
+		printf("envs: %s\n", env[i]);
+		i++;
 	}
-	close(fd);
-	content = (char *)malloc(sizeof(char) * (total_size_file + 1));
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		return (NULL);
-	bytes_read = read(fd, content, total_size_file);
-	if (bytes_read < 0)
-		return (NULL);
-	close(fd);
-	printf("total size: %d\n", total_size_file);
-	return (content);
+
+	if (access(arg, F_OK | X_OK) == 0)
+		path = ft_strdup(arg);
+	else
+		path = ft_strjoin("/usr/bin/", arg);
+	return (path);
 }
 
-int main(int ac, char **av)
+void	handle_exec(int ac, char **av, char **env)
 {
-	char	*content;
 	char	**prog_args;
-	char	 *env_args[] = {"PATH=/bin", NULL};
-	char	*path;
 	int		pid;
+
+	printf("count: %d\n", ac);
+	printf("args: %s\n", av[0]);
+	prog_args = ft_split(av[1], ' ');
+	pid = fork();
+	printf("pid: %d\n", pid);
+	if (pid == 0)
+	{
+		execve(p_handle_prog_name(prog_args[0], env), prog_args, NULL);
+	}
+	waitpid(pid, NULL, 0);
+	exit(0);
+}
+
+int main(int ac, char **av, char **env)
+{
+	int	fd[2];
 
 	ac--;
 	av++;
@@ -60,28 +60,8 @@ int main(int ac, char **av)
 		printf("wowzies hello\n");
 		return (0);
 	}
-	printf("args: %s\n", av[0]);
-	content = p_read_whole_file(av[0]);
-	prog_args = ft_split(av[1], ' ');
-	pid = fork();
-	printf("pid: %d\n", pid);
-	if (pid == 0)
-	{
-		if (access(prog_args[0], F_OK) == 0)
-			execve(prog_args[0], &prog_args[1], env_args);
-		else
-		{
-			path = ft_strjoin("/usr/bin/", prog_args[0]);
-			execve(path, &prog_args[1], env_args);
-		}
-	}
-	printf("split args: %s\n", prog_args[1]);
-	printf("\ntext:\n%s\n", content);
+	if (pipe(fd) < 0)
+		return (1);
+	tt(env);
+	handle_exec(ac, av, env);
 }
-
-// int i = 0;
-// while (prog_args[i])
-// {
-// 	printf("split args: %s\n", prog_args[i]);
-// 	i++;
-// }
