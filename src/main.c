@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 09:16:10 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 15:28:58 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 char	*p_handle_prog_name(char *arg, char **env)
 {
 	char	*path;
-	int		i;
 	char	**paths;
-	char	*tmp;
+	int		i;
 
 	i = 0;
 	while (env[i])
@@ -27,9 +26,7 @@ char	*p_handle_prog_name(char *arg, char **env)
 		i++;
 	}
 	paths = ft_split(env[i], ':');
-	tmp = paths[0];
-	paths[0] = ft_strdup(paths[0] + 5);
-	free(tmp);
+	paths[0] = ft_strdup_free(paths[0]);
 	path = ft_strdup(arg);
 	printf("path: %s\n", path);
 	i = 0;
@@ -42,7 +39,6 @@ char	*p_handle_prog_name(char *arg, char **env)
 		}
 		path = ft_strjoin(paths[i], "/");
 		path = ft_strjoin_free(path, arg, FIRST);
-		printf("path: %s\n", path);
 		i++;
 	}
 	i = 0;
@@ -57,35 +53,65 @@ char	*p_handle_prog_name(char *arg, char **env)
 	return (path);
 }
 
+void	handle_child(char *raw_path, int fds[], int fd, char **env)
+{
+	char	**args;
+	char	*exec;
+
+	args = ft_split(raw_path, ' ');
+	exec = p_handle_prog_name(args[0], env);
+	if (!exec)
+	{
+		printf("error has been found\n");
+		exit(1);
+	}
+	dup2(fds[1], STDOUT_FILENO);
+	dup2(fd, STDIN_FILENO);
+	close(fds[0]);
+	execve(exec, args, NULL);
+}
+
+void	handle_parent(char *raw_path, int fds[], int fd, char **env)
+{
+	char	**args;
+	char	*exec;
+
+	args = ft_split(raw_path, ' ');
+	exec = p_handle_prog_name(args[0], env);
+	if (!exec)
+	{
+		printf("error has been found\n");
+		exit(1);
+	}
+	dup2(fds[0], STDIN_FILENO);
+	dup2(fd, STDOUT_FILENO);
+	close(fds[1]);
+	execve(exec, args, NULL);
+}
+
 void	handle_exec(int ac, char **av, char **env)
 {
-	char	**prog_args;
-	char	*path;
 	int		pid;
+	int	 	fds[2];
+	int		fd;
 
-	printf("count: %d\n", ac);
-	printf("args: %s\n", av[0]);
-	prog_args = ft_split(av[1], ' ');
+	(void)ac;
+	fd = open(av[0], O_RDONLY);
+	if (pipe(fds) < 0)
+		exit(1);
 	pid = fork();
-	printf("pid: %d\n", pid);
 	if (pid == 0)
 	{
-		path = p_handle_prog_name(prog_args[0], env);
-		if (!path)
-		{
-			printf("error has been found\n");
-			exit(1);
-		}
-		execve(path, prog_args, NULL);
+		handle_child(av[1], fds, fd, env);
 	}
 	waitpid(pid, NULL, 0);
+	int other_fd = open(av[3], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	handle_parent(av[2], fds, other_fd, env);
 	exit(0);
 }
 
 int main(int ac, char **av, char **env)
 {
-	int	fd[2];
-
 	ac--;
 	av++;
 	if (ac == 0)
@@ -98,8 +124,6 @@ int main(int ac, char **av, char **env)
 		printf("no exec passed\n");
 		exit(1);
 	}
-	if (pipe(fd) < 0)
-		return (1);
 	handle_exec(ac, av, env);
-	printf("arg count: %d\n", ac);
+	// printf("arg count: %d\n", ac);
 }
