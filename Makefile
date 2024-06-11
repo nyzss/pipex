@@ -6,7 +6,7 @@
 #    By: okoca <okoca@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 19:32:31 by okoca             #+#    #+#              #
-#    Updated: 2024/06/09 18:28:29 by okoca            ###   ########.fr        #
+#    Updated: 2024/06/11 17:55:00 by okoca            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,10 @@ CFLAGS = -Wall -Werror -Wextra -I${INCLUDES_DIR} -I${LIBFT} -g
 
 LDFLAGS = -L${LIBFT} -lft
 
-SRC_FILES = main.c
+LIBFT_TARGET = ${LIBFT}/libft.a
+
+SRC_FILES = main.c \
+			utils.c
 
 NAME = pipex
 
@@ -33,12 +36,12 @@ OBJS = ${SRC:.c=.o}
 %.o: %.c
 	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
-${NAME}: ${OBJS} build_lib
+${NAME}: ${OBJS} ${LIBFT_TARGET}
 	${CC} ${CFLAGS} ${OBJS} ${LDFLAGS} -o ${NAME}
 
 all: ${NAME}
 
-build_lib:
+${LIBFT_TARGET}:
 	make -C ${LIBFT}
 
 clean:
@@ -51,4 +54,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all build_lib clean fclean re
+.PHONY: all clean fclean re

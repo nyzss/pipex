@@ -14,5 +14,5 @@
 *.so
 .vscode
 tester
-# *.txt
+*.txt
 pipex
