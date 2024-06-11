@@ -6,40 +6,11 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:15:10 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:19:11 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-char	*p_get_path(char *arg, char **env)
-{
-	char	*path;
-	char	**paths;
-	char	*tmp;
-	int		i;
-
-	i = 0;
-	paths = ft_split(p_get_env(env), ':');
-	path = ft_strdup(arg);
-	tmp = NULL;
-	while (access(path, F_OK | X_OK) != 0 && paths[i])
-	{
-		if (path)
-		{
-			free(path);
-			path = NULL;
-		}
-		tmp = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(tmp, arg);
-		free(tmp);
-		i++;
-	}
-	p_cleanup_array(paths);
-	if (access(path, F_OK | X_OK) != 0)
-		p_error_exit(EXIT_FAILURE, "Command not found!\n");
-	return (path);
-}
 
 void	exec(char *path_av, char **env)
 {
@@ -54,6 +25,22 @@ void	exec(char *path_av, char **env)
 		p_cleanup_array(args);
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	}
+}
+
+void	p_children(char **av, char **env, int fds[], int fd)
+{
+	dup2(fds[1], STDOUT_FILENO);
+	dup2(fd, STDIN_FILENO);
+	close(fds[0]);
+	exec(av[1], env);
+}
+
+void	p_parent(char **av, char **env, int fds[], int fd)
+{
+	dup2(fds[0], STDIN_FILENO);
+	dup2(fd, STDOUT_FILENO);
+	close(fds[1]);
+	exec(av[2], env);
 }
 
 void	p_execute(char **av, char **env)
@@ -71,17 +58,9 @@ void	p_execute(char **av, char **env)
 	if (pid < 0)
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	if (pid == 0)
-	{
-		dup2(fds[1], STDOUT_FILENO);
-		dup2(in_fd, STDIN_FILENO);
-		close(fds[0]);
-		exec(av[1], env);
-	}
+		p_children(av, env, fds, in_fd);
 	waitpid(pid, NULL, 0);
-	dup2(fds[0], STDIN_FILENO);
-	dup2(out_fd, STDOUT_FILENO);
-	close(fds[1]);
-	exec(av[2], env);
+	p_parent(av, env, fds, out_fd);
 }
 
 int main(int ac, char **av, char **env)
