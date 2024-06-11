@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:32:51 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 22:04:06 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ void	p_exec(char *path_av, char **env)
 
 	args = ft_split(path_av, ' ');
 	path = p_get_path(args[0], env);
+	if (!path)
+	{
+		p_cleanup_array(args);
+		p_error_exit(EXIT_FAILURE, "Command not found!\n");
+	}
 	if (execve(path, args, NULL) < 0)
 	{
 		free(path);
@@ -33,18 +38,19 @@ void	close_pipe(int fds[])
 	close(fds[1]);
 }
 
-void	p_handler(char **av, char **env)
+void	p_handler(int fds[], char **av, char **env)
 {
-	int	fds[2];
 	int	pid;
 	int	pid2;
 	int	in_fd;
 	int	out_fd;
 
-	if (pipe(fds) < 0)
-		p_error_exit(EXIT_FAILURE, strerror(errno));
 	in_fd = open(av[0], O_RDONLY);
+	if (in_fd < 0)
+		p_error_exit(EXIT_FAILURE, strerror(errno));
 	out_fd = open(av[3], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (in_fd < 0)
+		p_error_exit(EXIT_FAILURE, strerror(errno));
 	pid = fork();
 	if (pid < 0)
 		p_error_exit(EXIT_FAILURE, strerror(errno));
@@ -62,14 +68,15 @@ void	p_handler(char **av, char **env)
 
 int	main(int ac, char **av, char **env)
 {
-	ac--;
-	av++;
-	if (ac < 4)
+	int	fds[2];
+
+	if (ac < 5)
 	{
 		ft_printf("Usage: ./pipex infile cmd1 cmd2 outfile\n");
 		ft_printf("Try again...\n");
 		return (2);
 	}
-	p_handler(av, env);
-	printf("this should show\n");
+	if (pipe(fds) < 0)
+		p_error_exit(EXIT_FAILURE, strerror(errno));
+	p_handler(fds, av + 1, env);
 }

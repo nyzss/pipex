@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:53:35 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:16:29 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:49:44 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,6 @@ char	*p_get_path(char *arg, char **env)
 	}
 	p_cleanup_array(paths);
 	if (access(path, F_OK | X_OK) != 0)
-		p_error_exit(EXIT_FAILURE, "Command not found!\n");
+		return (free(path), NULL);
 	return (path);
 }

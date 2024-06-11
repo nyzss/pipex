@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:29:20 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:31:15 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 22:03:56 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <errno.h>
 # include <string.h>
 
-void	p_handler(char **av, char **env);
+void	p_handler(int fds[], char **av, char **env);
 
 void	p_exec(char *path_av, char **env);
 
