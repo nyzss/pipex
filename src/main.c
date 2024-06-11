@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:30:56 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:32:51 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	p_handler(char **av, char **env)
 	waitpid(pid2, NULL, 0);
 }
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	ac--;
 	av++;
