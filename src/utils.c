@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:53:35 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 17:36:51 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:09:40 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*p_get_env(char **env)
 			break ;
 		i++;
 	}
-	return (env[i]);
+	return (env[i] + 5);
 }
 
 char	*p_strjoin(char *first, char *second, char *add)
@@ -52,3 +52,15 @@ char	*p_strjoin(char *first, char *second, char *add)
 	return (new);
 }
 
+void	p_cleanup_array(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}

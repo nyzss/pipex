@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:29:20 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 17:37:16 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 20:55:37 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,7 @@ void	p_error_exit(int code, char *message);
 char	*p_get_env(char **env);
 
 char	*p_strjoin(char *first, char *second, char *add);
+
+void	p_cleanup_array(char **arr);
 
 #endif
