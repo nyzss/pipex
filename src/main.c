@@ -6,13 +6,13 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:19:11 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:30:56 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exec(char *path_av, char **env)
+void	p_exec(char *path_av, char **env)
 {
 	char	**args;
 	char	*path;
@@ -27,26 +27,17 @@ void	exec(char *path_av, char **env)
 	}
 }
 
-void	p_children(char **av, char **env, int fds[], int fd)
+void	close_pipe(int fds[])
 {
-	dup2(fds[1], STDOUT_FILENO);
-	dup2(fd, STDIN_FILENO);
 	close(fds[0]);
-	exec(av[1], env);
-}
-
-void	p_parent(char **av, char **env, int fds[], int fd)
-{
-	dup2(fds[0], STDIN_FILENO);
-	dup2(fd, STDOUT_FILENO);
 	close(fds[1]);
-	exec(av[2], env);
 }
 
-void	p_execute(char **av, char **env)
+void	p_handler(char **av, char **env)
 {
 	int	fds[2];
 	int	pid;
+	int	pid2;
 	int	in_fd;
 	int	out_fd;
 
@@ -59,8 +50,14 @@ void	p_execute(char **av, char **env)
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	if (pid == 0)
 		p_children(av, env, fds, in_fd);
+	pid2 = fork();
+	if (pid2 < 0)
+		p_error_exit(EXIT_FAILURE, strerror(errno));
+	if (pid2 == 0)
+		p_adopted_children(av, env, fds, out_fd);
+	close_pipe(fds);
 	waitpid(pid, NULL, 0);
-	p_parent(av, env, fds, out_fd);
+	waitpid(pid2, NULL, 0);
 }
 
 int main(int ac, char **av, char **env)
@@ -73,5 +70,6 @@ int main(int ac, char **av, char **env)
 		ft_printf("Try again...\n");
 		return (2);
 	}
-	p_execute(av, env);
+	p_handler(av, env);
+	printf("this should show\n");
 }

@@ -6,7 +6,7 @@
 #    By: okoca <okoca@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/30 19:32:31 by okoca             #+#    #+#              #
-#    Updated: 2024/06/11 17:55:00 by okoca            ###   ########.fr        #
+#    Updated: 2024/06/11 21:29:41 by okoca            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,8 @@ LDFLAGS = -L${LIBFT} -lft
 LIBFT_TARGET = ${LIBFT}/libft.a
 
 SRC_FILES = main.c \
-			utils.c
+			utils.c \
+			child.c
 
 NAME = pipex
 

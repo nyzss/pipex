@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:29:20 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 21:16:34 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:31:15 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,16 @@
 # include <sys/wait.h>
 # include <errno.h>
 # include <string.h>
+
+void	p_handler(char **av, char **env);
+
+void	p_exec(char *path_av, char **env);
+
+void	p_children(char **av, char **env, int fds[], int fd);
+
+void	close_pipe(int fds[]);
+
+void	p_adopted_children(char **av, char **env, int fds[], int fd);
 
 void	p_error_exit(int code, char *message);
 
