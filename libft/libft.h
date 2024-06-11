@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 15:03:36 by okoca             #+#    #+#             */
-/*   Updated: 2024/05/30 20:32:19 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/11 09:03:20 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include "ft_printf.h"
+# define FIRST 0
+# define SECOND 0
+
+// NEW FUNCS
+char	*ft_strjoin_free(char *first, char *second, int to_free);
+
+char	*ft_strjoin_add(char *first, char *second, char *add);
+
+char	*ft_strcat(char *dest, char *src);
+//end
 
 int		ft_isalpha(int c);
 
@@ -38,7 +48,7 @@ char	*ft_strdup(const char *str);
 
 char	*ft_strnstr(const char *big, const char *little, size_t len);
 
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin(char *s1, char *s2);
 
 char	*ft_strchr(const char *str, int c);
 
