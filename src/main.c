@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/11 22:04:06 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 08:42:07 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	p_exec(char *path_av, char **env)
 	char	*path;
 
 	args = ft_split(path_av, ' ');
+	if (!args)
+		p_error_exit(EXIT_FAILURE, strerror(errno));
 	path = p_get_path(args[0], env);
 	if (!path)
 	{
@@ -32,10 +34,12 @@ void	p_exec(char *path_av, char **env)
 	}
 }
 
-void	close_pipe(int fds[])
+void	close_fds(int fds[], int in_fd, int out_fd)
 {
 	close(fds[0]);
 	close(fds[1]);
+	close(in_fd);
+	close(out_fd);
 }
 
 void	p_handler(int fds[], char **av, char **env)
@@ -61,7 +65,7 @@ void	p_handler(int fds[], char **av, char **env)
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	if (pid2 == 0)
 		p_adopted_children(av, env, fds, out_fd);
-	close_pipe(fds);
+	close_fds(fds, in_fd, out_fd);
 	waitpid(pid, NULL, 0);
 	waitpid(pid2, NULL, 0);
 }
