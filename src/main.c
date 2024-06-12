@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 22:08:31 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 22:31:07 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,11 @@ void	p_exec(char *path_av, char **env, int fd_to_close)
 	if (!args)
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	path = p_get_path(args[0], env);
-	if (!path)
+	if (access(path, F_OK | X_OK) != 0)
 	{
+		if (path)
+			free(path);
+		close(fd_to_close);
 		p_cleanup_array(args);
 		p_error_exit(EXIT_FAILURE, "Command not found!");
 	}
