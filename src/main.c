@@ -6,13 +6,13 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 15:47:45 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 17:13:36 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	p_exec(char *path_av, char **env)
+void	p_exec(char *path_av, char **env, int fd_to_close)
 {
 	char	**args;
 	char	*path;
@@ -30,6 +30,7 @@ void	p_exec(char *path_av, char **env)
 	{
 		free(path);
 		p_cleanup_array(args);
+		close(fd_to_close);
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	}
 }

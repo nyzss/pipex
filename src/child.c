@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 21:27:47 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 16:58:35 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 17:14:06 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,26 +33,36 @@ void	p_precheck_path(char *av)
 
 void	p_children(char **av, char **env, int fds[], int in_out_fd[])
 {
+	if (in_out_fd[0] < 0)
+	{
+		close(fds[0]);
+		close(fds[1]);
+		close(in_out_fd[1]);
+		p_error_exit(EXIT_FAILURE, strerror(errno));
+	}
 	dup2(fds[1], STDOUT_FILENO);
 	dup2(in_out_fd[0], STDIN_FILENO);
 	close(fds[0]);
 	close(in_out_fd[1]);
-	if (in_out_fd[0] < 0)
-		p_error_exit(EXIT_FAILURE, strerror(errno));
 	close(in_out_fd[0]);
 	p_precheck_path(av[1]);
-	p_exec(av[1], env);
+	p_exec(av[1], env, fds[1]);
 }
 
 void	p_adopted_children(char **av, char **env, int fds[], int in_out_fd[])
 {
+	if (in_out_fd[1] < 0)
+	{
+		close(fds[0]);
+		close(fds[1]);
+		close(in_out_fd[0]);
+		p_error_exit(EXIT_FAILURE, strerror(errno));
+	}
 	dup2(fds[0], STDIN_FILENO);
 	dup2(in_out_fd[1], STDOUT_FILENO);
 	close(fds[1]);
 	close(in_out_fd[1]);
-	if (in_out_fd[1] < 0)
-		p_error_exit(EXIT_FAILURE, strerror(errno));
 	close(in_out_fd[0]);
 	p_precheck_path(av[2]);
-	p_exec(av[2], env);
+	p_exec(av[2], env, fds[0]);
 }
