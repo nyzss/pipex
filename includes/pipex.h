@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:29:20 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 08:56:40 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 15:47:51 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	p_exec(char *path_av, char **env);
 
 void	p_children(char **av, char **env, int fds[], int fd);
 
-void	close_fds(int fds[], int in_fd, int out_fd);
+void	close_fds(int fds[], int in_out_fd[]);
 
 void	p_adopted_children(char **av, char **env, int fds[], int fd);
 
