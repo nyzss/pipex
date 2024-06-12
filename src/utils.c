@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:53:35 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 09:00:11 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 22:08:14 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	p_error_exit(int code, char *message)
 {
-	ft_fprintf(STDERR_FILENO, "%s", message);
+	ft_fprintf(STDERR_FILENO, "%s\n", message);
 	exit(code);
 }
 
