@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 16:53:35 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 08:31:41 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 09:00:11 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,23 +69,21 @@ char	*p_get_path(char *arg, char **env)
 {
 	char	*path;
 	char	**paths;
-	char	*tmp;
 	int		i;
 
 	i = 0;
 	paths = ft_split(p_get_env(env), ':');
+	if (!paths)
+		p_error_exit(EXIT_FAILURE, strerror(errno));
 	path = ft_strdup(arg);
-	tmp = NULL;
+	if (!path)
+	{
+		p_cleanup_array(paths);
+		p_error_exit(EXIT_FAILURE, strerror(errno));
+	}
 	while (access(path, F_OK | X_OK) != 0 && paths[i])
 	{
-		if (path)
-		{
-			free(path);
-			path = NULL;
-		}
-		tmp = ft_strjoin(paths[i], "/");
-		path = ft_strjoin(tmp, arg);
-		free(tmp);
+		path = p_helper_path(arg, path, paths, i);
 		i++;
 	}
 	p_cleanup_array(paths);

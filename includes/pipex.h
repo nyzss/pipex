@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:29:20 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 08:34:43 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/12 08:56:40 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,7 @@ char	*p_strjoin(char *first, char *second, char *add);
 void	p_cleanup_array(char **arr);
 
 char	*p_get_path(char *arg, char **env);
+
+char	*p_helper_path(char *arg, char *path, char **paths, int i);
 
 #endif
