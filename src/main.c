@@ -6,13 +6,13 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:28:59 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 22:31:07 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/13 12:02:07 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	p_exec(char *path_av, char **env, int fd_to_close)
+void	p_exec(char *path_av, char **env)
 {
 	char	**args;
 	char	*path;
@@ -25,7 +25,6 @@ void	p_exec(char *path_av, char **env, int fd_to_close)
 	{
 		if (path)
 			free(path);
-		close(fd_to_close);
 		p_cleanup_array(args);
 		p_error_exit(EXIT_FAILURE, "Command not found!");
 	}
@@ -33,7 +32,6 @@ void	p_exec(char *path_av, char **env, int fd_to_close)
 	{
 		free(path);
 		p_cleanup_array(args);
-		close(fd_to_close);
 		p_error_exit(EXIT_FAILURE, strerror(errno));
 	}
 }

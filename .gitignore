@@ -14,6 +14,9 @@
 *.so
 .vscode
 tester
+tester2
+tester3
 *.txt
 pipex
 medic
+tester_pipex.sh

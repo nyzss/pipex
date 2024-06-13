@@ -6,7 +6,7 @@
 /*   By: okoca <okoca@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 18:29:20 by okoca             #+#    #+#             */
-/*   Updated: 2024/06/12 21:39:36 by okoca            ###   ########.fr       */
+/*   Updated: 2024/06/13 12:02:23 by okoca            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 void	p_handler(int fds[], char **av, char **env);
 
-void	p_exec(char *path_av, char **env, int fd_to_close);
+void	p_exec(char *path_av, char **env);
 
 void	p_children(char **av, char **env, int fds[]);
 
